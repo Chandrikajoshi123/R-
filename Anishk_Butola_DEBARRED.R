@@ -14,6 +14,8 @@ x <- 7
 square = X * X          # BUG: wrong variable name (X vs x)
 cat("Square:", square)
 # YOUR FIX below:
+x <- 7
+sqare = x * x
 
 
 # BUG 2 [Unit 1 - Vector Indexing]
