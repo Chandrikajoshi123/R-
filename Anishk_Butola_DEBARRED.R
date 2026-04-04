@@ -16,6 +16,7 @@ cat("Square:", square)
 # YOUR FIX below:
 x <- 7
 sqare = x * x
+mmnn
 
 
 # BUG 2 [Unit 1 - Vector Indexing]
