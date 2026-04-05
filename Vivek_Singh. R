@@ -1,1 +1,152 @@
+# ============================================================
+#  BCA 4th Semester | R Programming Assignment
+#  Student  : Vivek Singh
+#  Roll No  : BCA/4/SET4/04
+#  Deadline : 10 April 2026
+# ============================================================
 
+# ── Q1 [Unit 1] All R Operators Demonstrated ────────────────
+cat("===== Q1: Complete R Operator Showcase =====\n")
+
+a <- 25; b <- 4
+
+cat("--- Arithmetic Operators ---\n")
+cat(sprintf("  %d + %d  = %d\n",    a, b, a + b))
+cat(sprintf("  %d - %d  = %d\n",    a, b, a - b))
+cat(sprintf("  %d * %d  = %d\n",    a, b, a * b))
+cat(sprintf("  %d / %d  = %.4f\n",  a, b, a / b))
+cat(sprintf("  %d %% %d  = %d\n",   a, b, a %% b))
+cat(sprintf("  %d %%/%% %d = %d\n", a, b, a %/% b))
+cat(sprintf("  %d ^ %d  = %d\n",    a, b, a ^ b))
+
+cat("\n--- Relational Operators ---\n")
+rel_ops <- list("==" = a == b, "!=" = a != b, ">"  = a > b,
+                "<"  = a < b,  ">=" = a >= b,  "<=" = a <= b)
+for (op in names(rel_ops)) {
+  cat(sprintf("  %d %s %d  = %s\n", a, op, b, rel_ops[[op]]))
+}
+
+cat("\n--- Logical Operators ---\n")
+x <- TRUE; y <- FALSE
+cat(sprintf("  TRUE && FALSE = %s\n",  x && y))
+cat(sprintf("  TRUE || FALSE = %s\n",  x || y))
+cat(sprintf("  !TRUE         = %s\n",  !x))
+cat(sprintf("  xor(T, F)     = %s\n",  xor(x, y)))
+
+cat("\n--- Special / Misc Operators ---\n")
+vec <- 10:20
+cat(sprintf("  15 %%in%% 10:20  = %s\n",  15 %in% vec))
+cat(sprintf("  99 %%in%% 10:20  = %s\n\n", 99 %in% vec))
+
+
+# ── Q2 [Unit 2] Movies Data Frame — Filter + Sort ───────────
+cat("===== Q2: Movie Database =====\n")
+
+movies <- data.frame(
+  Title   = c("Interstellar", "The Dark Knight", "Inception",
+               "3 Idiots",    "Drishyam",        "Taare Zameen Par",
+               "Dangal",      "Uri",              "Article 15",
+               "Andhadhun"),
+  Year    = c(2014, 2008, 2010, 2009, 2013, 2007, 2016, 2019, 2019, 2018),
+  Rating  = c(8.6, 9.0, 8.8, 8.4, 8.2, 8.5, 8.4, 8.4, 8.2, 8.3),
+  Genre   = c("Sci-Fi", "Action", "Sci-Fi", "Drama", "Thriller",
+               "Drama",  "Sports", "Action", "Drama", "Thriller"),
+  stringsAsFactors = FALSE
+)
+
+cat("All Movies:\n")
+print(movies)
+
+# Filter by rating > 8.4
+cat("\nMovies with Rating > 8.4:\n")
+top_movies <- movies[movies$Rating > 8.4, ]
+top_movies <- top_movies[order(-top_movies$Rating), ]
+print(top_movies[, c("Title","Year","Rating","Genre")])
+
+# Genre-wise average rating
+cat("\nGenre-wise Average Rating:\n")
+genres <- unique(movies$Genre)
+for (g in sort(genres)) {
+  subset_g <- movies[movies$Genre == g, ]
+  cat(sprintf("  %-10s : %.2f (n=%d)\n", g,
+              mean(subset_g$Rating), nrow(subset_g)))
+}
+
+# Best movie of each decade
+movies$Decade <- paste0(movies$Year %/% 10 * 10, "s")
+cat("\nBest Movie per Decade:\n")
+for (dec in sort(unique(movies$Decade))) {
+  sub_dec <- movies[movies$Decade == dec, ]
+  best    <- sub_dec[which.max(sub_dec$Rating), ]
+  cat(sprintf("  %s → %s (%.1f)\n", dec, best$Title, best$Rating))
+}
+cat("\n")
+
+
+# ── Q3 [Unit 2] Pie Chart — Marks Distribution ──────────────
+cat("===== Q3: Marks Distribution Pie Chart =====\n")
+
+subjects <- c("Data Structures", "DBMS", "Operating System",
+              "R Programming",   "Discrete Maths")
+marks    <- c(78, 85, 70, 92, 65)
+pct      <- round(marks / sum(marks) * 100, 1)
+labels   <- paste0(subjects, "\n(", pct, "%)")
+
+cat("Marks per Subject:\n")
+for (i in seq_along(subjects)) {
+  cat(sprintf("  %-20s: %d  (%.1f%%)\n", subjects[i], marks[i], pct[i]))
+}
+cat(sprintf("\nTotal Marks : %d / 500 = %.1f%%\n", sum(marks),
+            sum(marks) / 500 * 100))
+
+colors <- c("#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FFEAA7")
+pie(
+  marks,
+  labels  = labels,
+  col     = colors,
+  main    = "Vivek Singh — Subject-wise Marks Distribution",
+  clockwise = TRUE,
+  init.angle = 90
+)
+legend("bottomright",
+       legend = subjects,
+       fill   = colors, cex = 0.85, title = "Subjects")
+
+
+# ── Q4 [Unit 3] Debugging — 3 Bugs Found & Fixed ────────────
+cat("\n===== Q4: Debugging Exercise =====\n")
+
+# ORIGINAL BUGGY CODE (shown as comments for reference):
+# buggy_sum <- funtion(a, b) {   # BUG 1: 'funtion' → 'function'
+#   result < a + b               # BUG 2: '<' should be '<-'
+#   return(Result)               # BUG 3: 'Result' → 'result' (case-sensitive)
+# }
+# cat("Sum:", buggy_sum(10, 20)  # BUG 4: missing closing )
+
+# FIXED CODE:
+fixed_sum <- function(a, b) {    # Fix 1: correct keyword 'function'
+  result <- a + b                # Fix 2: use assignment operator <-
+  return(result)                 # Fix 3: lowercase 'result' matches variable
+}
+cat("Sum:", fixed_sum(10, 20), "\n")  # Fix 4: closed parenthesis added
+
+# Extended version: robust add function with error handling
+safe_add <- function(a, b) {
+  if (!is.numeric(a) || !is.numeric(b)) {
+    stop("Both arguments must be numeric.")
+  }
+  result <- a + b
+  cat(sprintf("  safe_add(%g, %g) = %g\n", a, b, result))
+  invisible(result)
+}
+
+cat("\nRobust Addition Tests:\n")
+safe_add(10, 20)
+safe_add(-5, 3.14)
+safe_add(1e6, 2e6)
+
+# tryCatch for invalid input
+tryCatch(
+  safe_add("hello", 5),
+  error = function(e) cat(sprintf("  Caught error: %s\n", e$message))
+)
