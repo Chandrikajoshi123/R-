@@ -1,1 +1,185 @@
+# ============================================================
+#  BCA 4th Semester | R Programming Assignment
+#  Student  : sapna chauhan
+#  Status Debbared 
+#  Roll No  : BCA/4/SET4/07
+#  Deadline : 10 April 2026
+# ============================================================
 
+# ── Q1 Temperature Converter ──
+cat("===== Q1: Temperature Conversion =====\n")
+
+celsius_to_fahrenheit <- function(c) (c * 9/5) + 32
+celsius_to_kelvin     <- function(c) c + 273.15
+fahrenheit_to_celsius <- function(f) (f - 32) * 5/9
+
+cat(sprintf("%-25s %10s %12s %12s\n",
+            "Description", "Celsius", "Fahrenheit", "Kelvin"))
+cat(strrep("-", 60), "\n")
+
+temps <- list(
+  list("Absolute Zero", -273.15),
+  list("Water Freezes", 0.00),
+  list("Human Body", 37.00),
+  list("Water Boils", 100.00)
+)
+
+for (t in temps) {
+  c  <- t[[2]]
+  cat(sprintf("%-25s %10.2f %12.2f %12.2f\n",
+              t[[1]], c,
+              celsius_to_fahrenheit(c),
+              celsius_to_kelvin(c)))
+}
+
+user_c <- as.numeric("28.5")
+
+cat(sprintf("\nYou entered: %.1f°C\n", user_c))
+cat(sprintf("Fahrenheit  : %.2f°F\n",  celsius_to_fahrenheit(user_c)))
+cat(sprintf("Kelvin      : %.2f K\n\n", celsius_to_kelvin(user_c)))
+
+# ── Q2 Character Vector Operations ──
+cat("===== Q2 =====\n")
+
+days <- c("Monday","Tuesday","Wednesday","Thursday",
+          "Friday","Saturday","Sunday")
+
+cat(sprintf("Days          : %s\n", paste(days, collapse = ", ")))
+cat(sprintf("Total elements: %d\n", length(days)))
+cat(sprintf("3rd to 5th    : %s\n", paste(days[3:5], collapse = ", ")))
+cat(sprintf("Uppercase     : %s\n", paste(toupper(days), collapse = ", ")))
+cat(sprintf("Reversed      : %s\n", paste(rev(days), collapse = ", ")))
+cat(sprintf("Weekdays only : %s\n", paste(days[1:5], collapse = ", ")))
+cat(sprintf("Weekend       : %s\n", paste(days[6:7], collapse = ", ")))
+cat(sprintf("Contains 'day': %s\n",
+            paste(days[grep("day", days, ignore.case = TRUE)],
+                  collapse = ", ")))
+cat(sprintf("Sorted alpha  : %s\n\n",
+            paste(sort(days), collapse = ", ")))
+
+#── Q3 Student Report Card ──
+cat("===== Q3 =====\n")
+
+students <- data.frame(
+  Name    = c("Taniya","Meera","Komal","Ritika"),
+  Math    = c(88, 72, 95, 61),
+  English = c(76, 81, 88, 74),
+  Science = c(90, 68, 79, 85),
+  stringsAsFactors = FALSE
+)
+
+
+students$Total      <- rowSums(students[, 2:4])
+
+
+students$Percentage <- round(students$Total / 300 * 100, 2)
+
+students$Grade <- sapply(students$Percentage, function(p) {
+  if      (p >= 90) "A+"
+  else if (p >= 75) "A"
+  else if (p >= 60) "B"
+  else              "C"
+})
+
+
+students$Status <- ifelse(students$Percentage >= 40, "PASS", "FAIL")
+
+
+students <- students[order(-students$Total), ]
+
+
+students$Rank <- seq(1, nrow(students))
+
+print(students)
+
+
+topper <- students[1, ]
+cat(sprintf("\nClass Topper : %s — %.1f%% (%s)\n",
+            topper$Name, topper$Percentage, topper$Grade))
+
+# ── Q4 BMI Calculator ──
+cat("===== Q4 =====\n")
+
+bmi_calculator <- function(weight_kg, height_m) {
+
+  if (weight_kg <= 0 || height_m <= 0)
+    stop("Invalid input")
+
+  
+  bmi <- weight_kg / (height_m ^ 2)
+
+  
+  category <- if (bmi < 18.5) {
+    "Underweight"
+  } else if (bmi < 25.0) {
+    "Normal weight"
+  } else if (bmi < 30.0) {
+    "Overweight"
+  } else {
+    "Obese"
+  }
+
+  
+  list(bmi = bmi, category = category)
+}
+
+result <- bmi_calculator(55, 1.62)
+
+cat(sprintf("BMI: %.2f\n", result$bmi))
+cat(sprintf("Category: %s\n", result$category))
+
+# ── Q5 Matrix Operations ──
+cat("===== Q5 =====\n")
+
+mat1 <- matrix(1:9, nrow = 3, ncol = 3)
+mat2 <- matrix(9:1, nrow = 3, ncol = 3)
+
+cat("Matrix 1:\n")
+print(mat1)
+
+cat("Matrix 2:\n")
+print(mat2)
+
+sum_mat  <- mat1 + mat2
+diff_mat <- mat1 - mat2
+prod_mat <- mat1 * mat2
+
+
+mat_mult <- mat1 %*% mat2
+
+cat("Sum:\n")
+print(sum_mat)
+
+cat("Difference:\n")
+print(diff_mat)
+
+cat("Element-wise Product:\n")
+print(prod_mat)
+
+cat("Matrix Multiplication:\n")
+print(mat_mult)
+
+cat("Transpose of Matrix 1:\n")
+print(t(mat1))
+
+# ── Q6 File Handling ──
+cat("===== Q6 =====\n")
+
+data <- data.frame(
+  Name = c("A","B","C"),
+  Marks = c(78, 85, 92)
+)
+
+
+write.csv(data, "students.csv", row.names = FALSE)
+
+
+new_data <- read.csv("students.csv")
+
+cat("File Data:\n")
+print(new_data)
+
+
+avg <- mean(new_data$Marks)
+
+cat(sprintf("Average Marks: %.2f\n", avg))
