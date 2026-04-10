@@ -13,7 +13,10 @@
 # message like: "Hello, Aaditya! You are 20 years old."
 # ----------------------------------------------------------
 
-# YOUR CODE HERE ↓
+name <- readline(prompt = "Enter your name: ")
+age <- as.integer(readline(prompt = "Enter your age: "))
+
+cat("Hello, ", name, "! You are ", age, " years old.\n")
 
 
 # ----------------------------------------------------------
@@ -22,7 +25,13 @@
 # Find and print: sum, mean, median, min, and max.
 # ----------------------------------------------------------
 
-# YOUR CODE HERE ↓
+v <- c(10, 25, 30, 45, 50, 60, 70, 80, 90, 100)
+
+cat("Sum:", sum(v), "\n")
+cat("Mean:", mean(v), "\n")
+cat("Median:", median(v), "\n")
+cat("Min:", min(v), "\n")
+cat("Max:", max(v), "\n")
 
 
 # ----------------------------------------------------------
@@ -33,7 +42,20 @@
 # Add proper title and axis labels.
 # ----------------------------------------------------------
 
-# YOUR CODE HERE ↓
+students <- data.frame(
+  Name = c("A", "B", "C", "D", "E"),
+  Marks = c(85, 72, 90, 66, 78),
+  Grade = c("A", "B", "A", "C", "B")
+)
+
+barplot(
+  students$Marks,
+  names.arg = students$Name,
+  col = "skyblue",
+  main = "Student Marks",
+  xlab = "Students",
+  ylab = "Marks"
+)
 
 
 # ----------------------------------------------------------
@@ -48,4 +70,23 @@
 # Test it with at least 5 different marks values.
 # ----------------------------------------------------------
 
-# YOUR CODE HERE ↓
+calculate_grade <- function(marks) {
+  if (marks >= 90) {
+    return("A+")
+  } else if (marks >= 75) {
+    return("A")
+  } else if (marks >= 60) {
+    return("B")
+  } else if (marks >= 45) {
+    return("C")
+  } else {
+    return("Fail")
+  }
+}
+
+# Testing
+test_marks <- c(95, 80, 65, 50, 30)
+
+for (m in test_marks) {
+  cat("Marks:", m, "Grade:", calculate_grade(m), "\n")
+}
