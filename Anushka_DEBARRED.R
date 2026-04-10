@@ -38,6 +38,49 @@ cat(sprintf("\nYou entered: %.1f°C\n", user_c))
 cat(sprintf("Fahrenheit  : %.2f°F\n",  celsius_to_fahrenheit(user_c)))
 cat(sprintf("Kelvin      : %.2f K\n\n", celsius_to_kelvin(user_c)))
 
+#solutions 
+Temperature Converter
+
+celsius_to_fahrenheit: formula wrong → (c * 9/5) + 32
+celsius_to_kelvin: wrong constant → c + 273.15
+fahrenheit_to_celsius: formula wrong → (f - 32) * 5/9
+t[2] → t[[2]] (double brackets for list indexing)
+user_c <- "28.5" → user_c <- 28.5 (numeric, not string)
+
+#correct code
+# ── answer 1 Temperature Converter ──
+cat("===== Q1: Temperature Conversion =====\n")
+
+celsius_to_fahrenheit <- function(c) (c * 9/5) + 32
+celsius_to_kelvin     <- function(c) c + 273.15
+fahrenheit_to_celsius <- function(f) (f - 32) * 5/9
+
+cat(sprintf("%-25s %10s %12s %12s\n",
+            "Description", "Celsius", "Fahrenheit", "Kelvin"))
+cat(strrep("-", 60), "\n")
+
+temps <- list(
+  list("Absolute Zero", -273.15),
+  list("Water Freezes", 0.00),
+  list("Human Body", 37.00),
+  list("Water Boils", 100.00)
+)
+
+for (t in temps) {
+  c  <- t[[2]]
+  cat(sprintf("%-25s %10.2f %12.2f %12.2f\n",
+              t[[1]], c,
+              celsius_to_fahrenheit(c),
+              celsius_to_kelvin(c)))
+}
+
+user_c <- 28.5
+cat(sprintf("\nYou entered: %.1f°C\n", user_c))
+cat(sprintf("Fahrenheit  : %.2f°F\n",  celsius_to_fahrenheit(user_c)))
+cat(sprintf("Kelvin      : %.2f K\n\n", celsius_to_kelvin(user_c)))
+
+
+
 
 # ── Q2 Character Vector Operations ──
 cat("===== Q2 =====\n")
@@ -57,6 +100,37 @@ cat(sprintf("Contains 'day': %s\n",
                   collapse = ", ")))
 cat(sprintf("Sorted alpha  : %s\n\n",
             paste(sort(days), collapse = ", ")))
+
+#solution
+ – Character Vector
+
+day (undefined) → days (3 occurrences: paste, toupper, rev)
+days[3:8] → days[3:5] (only 7 elements, and label says "3rd to 5th")
+grep("DAY", days) → grep("day", days, ignore.case = TRUE)
+days[1:6] for weekdays → days[1:5]; days[7:8] for weekend → days[6:7]
+
+#correct code
+# ── Q2 Character Vector Operations ──
+cat("===== Q2 =====\n")
+
+days <- c("Monday","Tuesday","Wednesday","Thursday",
+          "Friday","Saturday","Sunday")
+
+cat(sprintf("Days          : %s\n", paste(days, collapse = ", ")))
+cat(sprintf("Total elements: %d\n", length(days)))
+cat(sprintf("3rd to 5th    : %s\n", paste(days[3:5], collapse = ", ")))
+cat(sprintf("Uppercase     : %s\n", paste(toupper(days), collapse = ", ")))
+cat(sprintf("Reversed      : %s\n", paste(rev(days), collapse = ", ")))
+cat(sprintf("Weekdays only : %s\n", paste(days[1:5], collapse = ", ")))
+cat(sprintf("Weekend       : %s\n", paste(days[6:7], collapse = ", ")))
+cat(sprintf("Contains 'day': %s\n",
+            paste(days[grep("day", days, ignore.case = TRUE)],
+                  collapse = ", ")))
+cat(sprintf("Sorted alpha  : %s\n\n",
+            paste(sort(days), collapse = ", ")))
+
+
+
 
 
 # ── Q3 Student Report Card ──
@@ -90,6 +164,49 @@ topper <- students[nrow(students), ]
 cat(sprintf("\nClass Topper : %s — %.1f%% (%s)\n",
             topper$Name, topper$Percentage, topper$Grade))
 
+#solution
+Q3 – Student Report Card
+
+students$Total <- rowSums(students[, 2:3]) → students[, 2:4] (3 subjects)
+/ 200 → / 300 (3 subjects × 100)
+order(students$Total) sorts ascending (lowest first) → use decreasing = TRUE
+seq(0, nrow(students)-1) → seq(1, nrow(students)) (rank starts at 1)
+topper <- students[nrow(students), ] → students[1, ] (after descending sort, topper is first)
+
+#correct code
+# ──answer3 Student Report Card ──
+cat("===== Q3 =====\n")
+
+students <- data.frame(
+  Name    = c("Taniya","Meera","Komal","Ritika"),
+  Math    = c(88, 72, 95, 61),
+  English = c(76, 81, 88, 74),
+  Science = c(90, 68, 79, 85),
+  stringsAsFactors = FALSE
+)
+
+students$Total      <- rowSums(students[, 2:4])
+students$Percentage <- round(students$Total / 300 * 100, 2)
+
+students$Grade <- sapply(students$Percentage, function(p) {
+  if      (p > 90) "A+"
+  else if (p > 75) "A"
+  else if (p > 60) "B"
+  else              "C"
+})
+
+students$Status <- ifelse(students$Percentage > 40, "PASS", "FAIL")
+students        <- students[order(students$Total, decreasing = TRUE), ]
+students$Rank   <- seq(1, nrow(students))
+
+print(students)
+
+topper <- students[1, ]
+cat(sprintf("\nClass Topper : %s — %.1f%% (%s)\n",
+            topper$Name, topper$Percentage, topper$Grade))
+
+
+
 
 # ── Q4 BMI Calculator ──
 cat("===== Q4 =====\n")
@@ -119,9 +236,50 @@ result <- bmi_calculator(55, 1.62)
 cat(sprintf("BMI: %.2f\n", result$bmi))
 cat(sprintf("Category: %s\n", result$category))
 
-# ── Q5 Matrix Operations ──
+#solutions
+Q4 – BMI Calculator
+
+bmi <- weight_kg * (height_m ^ 2) → weight_kg / (height_m ^ 2)
+Category order wrong: "Normal weight" and "Underweight" are swapped → fix thresholds order
+result$bmi / result$category → result[[1]] / result[[2]] (list indexed by position)
+
+#correct code
+# ── 4 BMI Calculator ──
+cat("===== Q4 =====\n")
+
+bmi_calculator <- function(weight_kg, height_m) {
+
+  if (weight_kg < 0 || height_m < 0)
+    stop("Invalid input")
+
+  bmi <- weight_kg / (height_m ^ 2)
+
+  category <- if (bmi < 18.5) {
+    "Underweight"
+  } else if (bmi < 25.0) {
+    "Normal weight"
+  } else if (bmi < 30.0) {
+    "Overweight"
+  } else {
+    "Obese"
+  }
+
+  list(bmi, category)
+}
+
+result <- bmi_calculator(55, 1.62)
+
+cat(sprintf("BMI: %.2f\n", result[[1]]))
+cat(sprintf("Category: %s\n", result[[2]]))
+
+
+               
+
+
+               # ── Q5 Matrix Operations ──
 cat("===== Q5 =====\n")
 
+               
 mat1 <- matrix(1:9, nrow = 3, ncol = 3)
 mat2 <- matrix(9:1, nrow = 3, ncol = 3)
 
@@ -151,6 +309,46 @@ print(mat_mult)
 cat("Transpose of Matrix 1:\n")
 print(t(mat))
 
+#solution
+Q5 – Matrix Operations
+
+mat_mult <- mat1 %*% t(mat2[1:2, ]) → mat1 %*% mat2 (both are 3×3, this line is invalid)
+t(mat) → t(mat1) (undefined variable)
+
+#correct code
+cat("===== Q5 =====\n")
+
+mat1 <- matrix(1:9, nrow = 3, ncol = 3)
+mat2 <- matrix(9:1, nrow = 3, ncol = 3)
+
+cat("Matrix 1:\n")
+print(mat1)
+
+cat("Matrix 2:\n")
+print(mat2)
+
+sum_mat  <- mat1 + mat2
+diff_mat <- mat1 - mat2
+prod_mat <- mat1 * mat2
+mat_mult <- mat1 %*% mat2
+
+cat("Sum:\n")
+print(sum_mat)
+
+cat("Difference:\n")
+print(diff_mat)
+
+cat("Element-wise Product:\n")
+print(prod_mat)
+
+cat("Matrix Multiplication:\n")
+print(mat_mult)
+
+cat("Transpose of Matrix 1:\n")
+print(t(mat1))
+
+
+
 
 # ── Q6 File Handling ──
 cat("===== Q6 =====\n")
@@ -168,5 +366,31 @@ cat("File Data:\n")
 print(new_data)
 
 avg <- mean(new_data$Mark)
+
+cat(sprintf("Average Marks: %.2f\n", avg))
+
+#solution
+– File Handling
+
+row.name = FALSE → row.names = FALSE
+read.csv("student.csv") → read.csv("students.csv") (filename mismatch)
+new_data$Mark → new_data$Marks (column name mismatch)
+
+#correct code
+cat("===== Q6 =====\n")
+
+data <- data.frame(
+  Name = c("A","B","C"),
+  Marks = c(78, 85, 92)
+)
+
+write.csv(data, "students.csv", row.names = FALSE)
+
+new_data <- read.csv("students.csv")
+
+cat("File Data:\n")
+print(new_data)
+
+avg <- mean(new_data$Marks)
 
 cat(sprintf("Average Marks: %.2f\n", avg))
