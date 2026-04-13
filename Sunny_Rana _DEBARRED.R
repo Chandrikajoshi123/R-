@@ -26,7 +26,8 @@ cat(sprintf("Age     : %d years  |  Born in : %d\n", age, birth_year))
 cat(sprintf("You have lived approximately %s days.\n",
             format(days_lived, big.mark = ",")))
 cat(sprintf("You will turn 21 in %d.\n\n", next_bday))
-
+solution - 
+their is no problem in the code
 
 # ── Q2 [Unit 1] Vectors, Statistics & Logical Filtering ─────
 # Task: Marks vector → full stats + pass/fail classification
