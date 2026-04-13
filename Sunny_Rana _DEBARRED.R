@@ -27,6 +27,17 @@ cat(sprintf("You have lived approximately %s days.\n",
             format(days_lived, big.mark = ",")))
 cat(sprintf("You will turn 21 in %d.\n\n", next_bday))
 
+# FIX: renamed variable (clear meaning)
+year_turn_21 <- birth_year + 21L  
+
+cat(sprintf("Hello, %s!\n", name))
+cat(sprintf("Branch  : %s | Semester : %d\n", branch, semester))
+cat(sprintf("Age     : %d years  |  Born in : %d\n", age, birth_year))
+cat(sprintf("You have lived approximately %s days.\n",
+            format(days_lived, big.mark = ",")))
+cat(sprintf("You will turn 21 in %d.\n\n", year_turn_21))
+
+
 
 # ── Q2 [Unit 1] Vectors, Statistics & Logical Filtering ─────
 # Task: Marks vector → full stats + pass/fail classification
@@ -65,6 +76,17 @@ grade <- dplyr::case_when(
 # using base R instead of dplyr for portability:
 grade <- if (pct >= 90) "A+" else if (pct >= 75) "A" else if (pct >= 60) "B" else if (pct >= 45) "C" else "Fail"
 cat(sprintf("\nOverall Grade: %s (%.2f%%)\n\n", grade, pct))
+
+            # FIX: Removed dplyr::case_when (not needed)
+pct <- mean(marks)
+grade <- if (pct >= 90) "A+" 
+         else if (pct >= 75) "A" 
+         else if (pct >= 60) "B" 
+         else if (pct >= 45) "C" 
+         else "Fail"
+
+cat(sprintf("\nOverall Grade: %s (%.2f%%)\n\n", grade, pct))
+
 
 
 # ── Q3 [Unit 2] Data Frame, Analysis & Bar Chart ────────────
@@ -121,6 +143,37 @@ legend("topright",
        legend = c("Distinction (75%)", "First Class (60%)"),
        col    = c("red", "orange"), lty = 2, lwd = 2, cex = 0.8)
 
+fix:
+cat("===== Q3: Student Data =====\n")
+
+students <- data.frame(
+  Name    = c("Aaditya","Riya","Mohit","Priya","Deepak",
+              "Sunita","Rahul","Neha","Arjun","Kavya"),
+  Maths   = c(87,92,68,75,55,80,63,90,72,88),
+  Science = c(79,85,70,82,60,74,77,91,66,83),
+  English = c(65,78,80,70,72,68,85,76,90,71)
+)
+
+students$Total      <- rowSums(students[,2:4])
+students$Percentage <- round(students$Total/300*100,2)
+
+students$Grade <- ifelse(students$Percentage >= 75, "Distinction",
+                  ifelse(students$Percentage >= 60, "First Class",
+                  ifelse(students$Percentage >= 45, "Second Class","Pass")))
+
+# Sort
+students <- students[order(-students$Percentage), ]
+students$Rank <- 1:nrow(students)
+
+print(students)
+
+# Graph
+barplot(students$Percentage,
+        names.arg = students$Name,
+        col = "skyblue",
+        main = "Student Performance",
+        las = 2)
+
 
 # ── Q4 [Unit 3] Functions, Loops & Recursion ────────────────
 # Task: Grade calculator + Fibonacci + prime check
@@ -144,6 +197,24 @@ calculate_grade <- function(marks) {
 cat("Grade Calculator:\n")
 test_marks <- c(95, 82, 67, 50, 38, 100, 44.5)
 for (m in test_marks) calculate_grade(m)
+fix:
+cat("\n===== Q4: Functions =====\n")
+
+# Grade Function
+calculate_grade <- function(marks) {
+  if (marks < 0 || marks > 100)
+    stop("Invalid marks")
+
+  grade <- if (marks >= 90) "A+" 
+           else if (marks >= 75) "A"
+           else if (marks >= 60) "B"
+           else if (marks >= 45) "C"
+           else "Fail"
+
+  cat("Marks:", marks, "Grade:", grade, "\n")
+}
+
+calculate_grade(85)
 
 # 4b: Fibonacci sequence using a loop
 cat("\nFibonacci Sequence (first 15 terms):\n")
@@ -155,6 +226,24 @@ fibonacci <- function(n) {
 }
 fib_seq <- fibonacci(15)
 cat(paste(fib_seq, collapse = " → "), "\n")
+
+fix:
+# Fibonacci (FIXED)
+fibonacci <- function(n) {
+  if (n <= 0) return(integer(0))   # FIX
+
+  fib <- numeric(n)
+  fib[1] <- 0
+  if (n > 1) fib[2] <- 1
+
+  for (i in 3:n) {
+    fib[i] <- fib[i-1] + fib[i-2]
+  }
+  return(fib)
+}
+
+print(fibonacci(10))
+
 
 # 4c: Prime checker
 is_prime <- function(n) {
@@ -171,3 +260,19 @@ cat("\nPrime numbers between 1 and 50:\n")
 primes <- Filter(is_prime, 1:50)
 cat(paste(primes, collapse = ", "), "\n")
 cat(sprintf("Total primes found: %d\n", length(primes)))
+
+fix:
+# Prime Function (optimized)
+is_prime <- function(n) {
+  if (n < 2) return(FALSE)
+  if (n == 2) return(TRUE)
+  if (n %% 2 == 0) return(FALSE)
+
+  for (i in seq(3, floor(sqrt(n)), by = 2)) {  # FIX: skip even numbers
+    if (n %% i == 0) return(FALSE)
+  }
+  return(TRUE)
+}
+
+primes <- Filter(is_prime, 1:50)
+print(primes)
